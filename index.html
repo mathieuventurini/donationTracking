@@ -289,6 +289,310 @@
             stroke: var(--danger);
         }
 
+        /* ===== TABS ===== */
+        .tabs-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 0.4rem;
+            border-radius: 12px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 0.85rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: var(--dark);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .tab-btn.active {
+            background: var(--white);
+            color: #6366f1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== SERVICE SECTION ===== */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .service-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .service-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .service-card-icon.cesu {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .service-card-icon.garde {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .service-card-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+        }
+
+        .service-card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .service-card-subtitle {
+            font-size: 0.8rem;
+            color: var(--dark);
+            opacity: 0.7;
+        }
+
+        .service-input-group {
+            margin-bottom: 1rem;
+        }
+
+        .service-input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .service-input-group input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .service-input-group input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .service-result {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .service-result.cesu {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+        }
+
+        .service-result.garde {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+        }
+
+        .service-result-label {
+            font-size: 0.8rem;
+            color: var(--dark);
+            opacity: 0.8;
+            margin-bottom: 0.25rem;
+        }
+
+        .service-result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #059669;
+        }
+
+        .service-result.garde .service-result-value {
+            color: #d97706;
+        }
+
+        .service-info {
+            font-size: 0.75rem;
+            color: var(--dark);
+            opacity: 0.6;
+            margin-top: 0.5rem;
+        }
+
+        /* Service Summary */
+        .service-summary {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .service-summary-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .service-summary-title svg {
+            width: 24px;
+            height: 24px;
+            stroke: #6366f1;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 10px;
+        }
+
+        .summary-item-label {
+            font-size: 0.8rem;
+            color: var(--dark);
+            opacity: 0.7;
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-item-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .summary-item-value.total {
+            color: #6366f1;
+        }
+
+        .service-tax-info {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--dark);
+        }
+
+        .service-tax-info strong {
+            color: var(--primary);
+        }
+
+        /* Cases déclaration */
+        .declaration-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 10px;
+            border-left: 4px solid #6366f1;
+        }
+
+        .declaration-box-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #6366f1;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .declaration-box-title svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .case-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .case-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--white);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .case-number {
+            font-weight: 700;
+            color: #6366f1;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .case-label {
+            color: var(--dark);
+            font-size: 0.8rem;
+        }
+
         /* ===== MODAL ===== */
         .modal-overlay {
             position: fixed;
@@ -775,6 +1079,23 @@
                 align-items: flex-start;
                 gap: 1rem;
             }
+
+            .tabs-container {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                padding: 0.75rem 1rem;
+            }
+
+            .service-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
         }
 
         @media (max-width: 600px) {
@@ -910,6 +1231,25 @@
                 </div>
             </header>
 
+            <!-- Onglets -->
+            <div class="tabs-container">
+                <button class="tab-btn active" data-tab="dons">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                    </svg>
+                    Dons
+                </button>
+                <button class="tab-btn" data-tab="services">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                    </svg>
+                    Services à la personne
+                </button>
+            </div>
+
+            <!-- TAB: Dons -->
+            <div class="tab-content active" id="tab-dons">
+
             <!-- Récap par donateur -->
             <div class="recap-donateurs" id="recapDonateurs"></div>
 
@@ -1027,6 +1367,136 @@
                     </table>
                 </div>
             </div>
+            </div>
+            <!-- FIN TAB: Dons -->
+
+            <!-- TAB: Services à la personne -->
+            <div class="tab-content" id="tab-services">
+                <!-- Récapitulatif Services -->
+                <div class="service-summary" style="margin-bottom: 1.5rem;">
+                    <div class="service-summary-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+                        </svg>
+                        Récapitulatif Crédit d'Impôt Services
+                    </div>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <div class="summary-item-label">CESU</div>
+                            <div class="summary-item-value" id="summaryCredit-cesu">0 €</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-item-label">Frais de garde</div>
+                            <div class="summary-item-value" id="summaryCredit-garde">0 €</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-item-label">Total Crédit</div>
+                            <div class="summary-item-value total" id="summaryCredit-total">0 €</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-grid">
+                    <!-- Carte CESU -->
+                    <div class="service-card">
+                        <div class="service-card-header">
+                            <div class="service-card-icon cesu">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="service-card-title">Tickets CESU</div>
+                                <div class="service-card-subtitle">Chèque Emploi Service Universel</div>
+                            </div>
+                        </div>
+                        <div class="service-input-group">
+                            <label for="cesuAmount">Montant total CESU payé (€)</label>
+                            <input type="number" id="cesuAmount" min="0" step="0.01" placeholder="0.00" value="">
+                        </div>
+                        <div class="service-result cesu">
+                            <div class="service-result-label">Crédit d'impôt estimé (50%)</div>
+                            <div class="service-result-value" id="cesuCredit">0 €</div>
+                            <div class="service-info">Plafond : 12 000€ de dépenses (6 000€ de crédit max)</div>
+                        </div>
+                        <div class="declaration-box">
+                            <div class="declaration-box-title">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                                </svg>
+                                Cases déclaration 2042 RICI
+                            </div>
+                            <div class="case-list">
+                                <div class="case-item">
+                                    <span class="case-number">7DB</span>
+                                    <span class="case-label">Sommes versées emploi à domicile</span>
+                                </div>
+                                <div class="case-item">
+                                    <span class="case-number">7DQ</span>
+                                    <span class="case-label">Si actif ou demandeur d'emploi (cocher)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Carte Frais de garde -->
+                    <div class="service-card">
+                        <div class="service-card-header">
+                            <div class="service-card-icon garde">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="service-card-title">Frais de garde</div>
+                                <div class="service-card-subtitle">Enfants de moins de 6 ans</div>
+                            </div>
+                        </div>
+                        <div class="service-input-group">
+                            <label for="gardeAmount">Montant total frais de garde (€)</label>
+                            <input type="number" id="gardeAmount" min="0" step="0.01" placeholder="0.00" value="">
+                        </div>
+                        <div class="service-input-group">
+                            <label for="nombreEnfants">Nombre d'enfants</label>
+                            <input type="number" id="nombreEnfants" min="1" max="10" value="1">
+                        </div>
+                        <div class="service-result garde">
+                            <div class="service-result-label">Crédit d'impôt estimé (50%)</div>
+                            <div class="service-result-value" id="gardeCredit">0 €</div>
+                            <div class="service-info" id="gardeInfo">Plafond : 3 500€ par enfant (1 750€ de crédit max/enfant)</div>
+                        </div>
+                        <div class="declaration-box">
+                            <div class="declaration-box-title">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                                </svg>
+                                Cases déclaration 2042 RICI
+                            </div>
+                            <div class="case-list">
+                                <div class="case-item">
+                                    <span class="case-number">7GA</span>
+                                    <span class="case-label">1er enfant</span>
+                                </div>
+                                <div class="case-item">
+                                    <span class="case-number">7GB</span>
+                                    <span class="case-label">2ème enfant</span>
+                                </div>
+                                <div class="case-item">
+                                    <span class="case-number">7GC</span>
+                                    <span class="case-label">3ème enfant</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-tax-info">
+                    <strong>Informations fiscales :</strong><br>
+                    • <strong>CESU</strong> : Crédit d'impôt de 50% des sommes versées, plafonné à 12 000€ de dépenses par an (soit 6 000€ de crédit max)<br>
+                    • <strong>Frais de garde</strong> : Crédit d'impôt de 50% des frais engagés, plafonné à 3 500€ par enfant de moins de 6 ans (soit 1 750€ de crédit max par enfant)
+                </div>
+            </div>
+            <!-- FIN TAB: Services -->
         </div>
     </div>
 
@@ -1051,9 +1521,25 @@
             return localStorage.getItem('passwordHash') || DEFAULT_PASSWORD_HASH;
         }
 
-        // Check if user is authenticated
+        // Session duration: 2 days in milliseconds
+        const SESSION_DURATION = 2 * 24 * 60 * 60 * 1000;
+
+        // Check if user is authenticated (with 2-day expiration)
         function isAuthenticated() {
-            return sessionStorage.getItem('authenticated') === 'true';
+            const authenticated = localStorage.getItem('authenticated') === 'true';
+            const timestamp = localStorage.getItem('authTimestamp');
+
+            if (!authenticated || !timestamp) return false;
+
+            const elapsedTime = Date.now() - parseInt(timestamp);
+            if (elapsedTime > SESSION_DURATION) {
+                // Session expired, clear it
+                localStorage.removeItem('authenticated');
+                localStorage.removeItem('authTimestamp');
+                return false;
+            }
+
+            return true;
         }
 
         // Initialize auth state
@@ -1097,7 +1583,8 @@
             if (hashedPassword === storedHash) {
                 // Success
                 failedAttempts = 0;
-                sessionStorage.setItem('authenticated', 'true');
+                localStorage.setItem('authenticated', 'true');
+                localStorage.setItem('authTimestamp', Date.now().toString());
                 document.getElementById('loginError').classList.remove('visible');
                 showApp();
             } else {
@@ -1150,7 +1637,8 @@
 
         // Logout
         function logout() {
-            sessionStorage.removeItem('authenticated');
+            localStorage.removeItem('authenticated');
+            localStorage.removeItem('authTimestamp');
             document.getElementById('appContainer').classList.remove('visible');
             setTimeout(() => {
                 showLogin();
@@ -1476,6 +1964,86 @@
                     closePasswordModal();
                 }
             });
+
+            // ===== TABS SYSTEM =====
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.dataset.tab;
+
+                    // Update buttons
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    // Update content
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById('tab-' + tabId).classList.add('active');
+                });
+            });
+
+            // ===== SERVICES CALCULATIONS =====
+            const CESU_PLAFOND = 12000;
+            const GARDE_PLAFOND_PAR_ENFANT = 3500;
+
+            // Load saved values
+            function loadServiceValues() {
+                const cesuAmount = localStorage.getItem('cesuAmount');
+                const gardeAmount = localStorage.getItem('gardeAmount');
+                const nombreEnfants = localStorage.getItem('nombreEnfants');
+
+                if (cesuAmount) document.getElementById('cesuAmount').value = cesuAmount;
+                if (gardeAmount) document.getElementById('gardeAmount').value = gardeAmount;
+                if (nombreEnfants) document.getElementById('nombreEnfants').value = nombreEnfants;
+
+                calculateServiceCredits();
+            }
+
+            // Save values to localStorage
+            function saveServiceValues() {
+                localStorage.setItem('cesuAmount', document.getElementById('cesuAmount').value || '');
+                localStorage.setItem('gardeAmount', document.getElementById('gardeAmount').value || '');
+                localStorage.setItem('nombreEnfants', document.getElementById('nombreEnfants').value || '1');
+            }
+
+            // Calculate credits
+            function calculateServiceCredits() {
+                // CESU calculation
+                const cesuAmount = parseFloat(document.getElementById('cesuAmount').value) || 0;
+                const cesuEligible = Math.min(cesuAmount, CESU_PLAFOND);
+                const cesuCredit = cesuEligible * 0.5;
+                document.getElementById('cesuCredit').textContent = formatCurrency(cesuCredit);
+                document.getElementById('summaryCredit-cesu').textContent = formatCurrency(cesuCredit);
+
+                // Garde calculation
+                const gardeAmount = parseFloat(document.getElementById('gardeAmount').value) || 0;
+                const nombreEnfants = parseInt(document.getElementById('nombreEnfants').value) || 1;
+                const gardePlafondTotal = GARDE_PLAFOND_PAR_ENFANT * nombreEnfants;
+                const gardeEligible = Math.min(gardeAmount, gardePlafondTotal);
+                const gardeCredit = gardeEligible * 0.5;
+                document.getElementById('gardeCredit').textContent = formatCurrency(gardeCredit);
+                document.getElementById('summaryCredit-garde').textContent = formatCurrency(gardeCredit);
+
+                // Update info text
+                const maxCreditPerEnfant = GARDE_PLAFOND_PAR_ENFANT * 0.5;
+                document.getElementById('gardeInfo').textContent =
+                    `Plafond : ${formatCurrency(gardePlafondTotal)} (${nombreEnfants} enfant${nombreEnfants > 1 ? 's' : ''} × ${formatCurrency(GARDE_PLAFOND_PAR_ENFANT)}) → ${formatCurrency(maxCreditPerEnfant * nombreEnfants)} de crédit max`;
+
+                // Total
+                const totalCredit = cesuCredit + gardeCredit;
+                document.getElementById('summaryCredit-total').textContent = formatCurrency(totalCredit);
+
+                // Save values
+                saveServiceValues();
+            }
+
+            // Event listeners for services inputs
+            document.getElementById('cesuAmount').addEventListener('input', calculateServiceCredits);
+            document.getElementById('gardeAmount').addEventListener('input', calculateServiceCredits);
+            document.getElementById('nombreEnfants').addEventListener('input', calculateServiceCredits);
+
+            // Load service values on page load
+            loadServiceValues();
 
             // Initialize auth
             initAuth();
