@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suivi des Dons & Crédits d'Impôt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+            --white: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --mathieu: #3498db;
+            --assia: #9b59b6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(160deg, #6366f1 0%, #4f46e5 50%, #3730a3 100%);
+            min-height: 100vh;
+            padding: 1rem;
+            color: var(--dark);
+        }
+
+        /* ===== LOGIN SCREEN ===== */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(160deg, #6366f1 0%, #4f46e5 50%, #3730a3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .login-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .login-card {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 380px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .login-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke: white;
+        }
+
+        .login-title {
+            text-align: center;
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: var(--dark);
+            opacity: 0.7;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .password-wrapper {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding: 0.9rem 3rem 0.9rem 1rem;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .password-wrapper input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+
+        .toggle-password:hover {
+            opacity: 0.8;
+        }
+
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--dark);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .login-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .login-error {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: none;
+            animation: shake 0.4s ease;
+        }
+
+        .login-error.visible {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .lockout-timer {
+            text-align: center;
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .lockout-timer.visible {
+            display: block;
+        }
+
+        /* ===== APP CONTAINER ===== */
+        .app-container {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .app-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ===== HEADER WITH LOGOUT ===== */
+        header {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px var(--shadow);
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-title {
+            text-align: left;
+        }
+
+        .header-title h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .header-title .subtitle {
+            color: var(--dark);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: 1px solid var(--light);
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-icon:hover {
+            background: var(--light);
+        }
+
+        .btn-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--dark);
+        }
+
+        .btn-icon.logout:hover {
+            background: rgba(231, 76, 60, 0.1);
+            border-color: var(--danger);
+        }
+
+        .btn-icon.logout:hover svg {
+            stroke: var(--danger);
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 1rem;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-title svg {
+            width: 24px;
+            height: 24px;
+            stroke: #6366f1;
+        }
+
+        .modal .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .modal label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+        }
+
+        .modal input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel {
+            background: var(--light);
+            border: none;
+            color: var(--dark);
+        }
+
+        .btn-cancel:hover {
+            background: #dfe6e9;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            border: none;
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .modal-error {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .modal-error.visible {
+            display: block;
+        }
+
+        .modal-success {
+            color: var(--success);
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        /* ===== EXISTING STYLES ===== */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px var(--shadow);
+        }
+
+        .stat-card {
+            text-align: center;
+        }
+
+        .stat-label {
+            color: var(--dark);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.85rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .stat-change.positive {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        .recap-donateurs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .recap-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px var(--shadow);
+            border-left: 4px solid var(--secondary);
+        }
+
+        .recap-card.mathieu {
+            border-left-color: var(--mathieu);
+        }
+
+        .recap-card.assia {
+            border-left-color: var(--assia);
+        }
+
+        .recap-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .recap-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--white);
+        }
+
+        .recap-avatar.mathieu {
+            background: var(--mathieu);
+        }
+
+        .recap-avatar.assia {
+            background: var(--assia);
+        }
+
+        .recap-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .recap-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .recap-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--light);
+        }
+
+        .recap-row:last-child {
+            border-bottom: none;
+        }
+
+        .recap-label {
+            color: var(--dark);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .recap-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .recap-value.amount {
+            font-size: 1.1rem;
+            color: var(--success);
+        }
+
+        .form-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        input, select {
+            padding: 0.75rem;
+            border: 2px solid var(--light);
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+            background: var(--white);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: var(--secondary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+
+        .btn-delete {
+            background: transparent;
+            padding: 0.4rem;
+            border: none;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: opacity 0.2s;
+        }
+
+        .btn-delete:hover {
+            opacity: 0.6;
+        }
+
+        .btn-delete svg {
+            width: 16px;
+            height: 16px;
+            stroke: #64748b;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .donations-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .donations-table th {
+            background: var(--primary);
+            color: var(--white);
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .donations-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light);
+            font-size: 0.9rem;
+        }
+
+        .donations-table tr:hover {
+            background: rgba(52, 152, 219, 0.05);
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-66 {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--secondary);
+        }
+
+        .badge-75 {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        .badge-mathieu {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--mathieu);
+        }
+
+        .badge-assia {
+            background: rgba(155, 89, 182, 0.1);
+            color: var(--assia);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--dark);
+            opacity: 0.6;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .header-title h1 {
+                font-size: 1.4rem;
+            }
+
+            header {
+                text-align: center;
+                justify-content: center;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .donations-table {
+                font-size: 0.8rem;
+            }
+
+            .donations-table th,
+            .donations-table td {
+                padding: 0.5rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .donations-table thead {
+                display: none;
+            }
+
+            .donations-table tr {
+                display: block;
+                margin-bottom: 1rem;
+                border: 1px solid var(--light);
+                border-radius: 5px;
+                padding: 0.5rem;
+            }
+
+            .donations-table td {
+                display: block;
+                text-align: right;
+                padding: 0.5rem;
+                border: none;
+            }
+
+            .donations-table td::before {
+                content: attr(data-label);
+                float: left;
+                font-weight: 600;
+                color: var(--dark);
+            }
+        }
+
+        .tax-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(52, 152, 219, 0.05);
+            border-radius: 5px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .tax-info strong {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <div class="login-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+            </div>
+            <h2 class="login-title">Connexion</h2>
+            <p class="login-subtitle">Suivi des Dons & Crédits d'Impôt</p>
+
+            <div class="login-error" id="loginError">
+                Mot de passe incorrect
+            </div>
+
+            <form id="loginForm">
+                <div class="password-wrapper">
+                    <input type="password" id="loginPassword" placeholder="Mot de passe" required autocomplete="current-password">
+                    <button type="button" class="toggle-password" id="togglePassword">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" id="eyeIcon">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                    </button>
+                </div>
+                <button type="submit" class="login-btn" id="loginBtn">Se connecter</button>
+            </form>
+
+            <div class="lockout-timer" id="lockoutTimer">
+                Trop de tentatives. Réessayez dans <span id="lockoutSeconds">30</span>s
+            </div>
+        </div>
+    </div>
+
+    <!-- CHANGE PASSWORD MODAL -->
+    <div class="modal-overlay" id="passwordModal">
+        <div class="modal">
+            <div class="modal-title">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
+                </svg>
+                Changer le mot de passe
+            </div>
+            <form id="changePasswordForm">
+                <div class="form-group">
+                    <label for="currentPassword">Mot de passe actuel</label>
+                    <input type="password" id="currentPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">Nouveau mot de passe</label>
+                    <input type="password" id="newPassword" required minlength="6">
+                    <div class="modal-error" id="newPasswordError">Minimum 6 caractères</div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmer le mot de passe</label>
+                    <input type="password" id="confirmPassword" required>
+                    <div class="modal-error" id="confirmPasswordError">Les mots de passe ne correspondent pas</div>
+                </div>
+                <div class="modal-error" id="currentPasswordError">Mot de passe actuel incorrect</div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" id="cancelPasswordChange">Annuler</button>
+                    <button type="submit" class="btn-confirm">Confirmer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div class="app-container" id="appContainer">
+        <div class="container">
+            <header>
+                <div class="header-title">
+                    <h1>Suivi des Dons & Crédits d'Impôt</h1>
+                    <p class="subtitle">Gérez vos dons et optimisez votre crédit d'impôt</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-icon" id="settingsBtn" title="Changer le mot de passe">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                    </button>
+                    <button class="btn-icon logout" id="logoutBtn" title="Déconnexion">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Récap par donateur -->
+            <div class="recap-donateurs" id="recapDonateurs"></div>
+
+            <!-- Tableau de bord -->
+            <div class="dashboard" id="dashboard">
+                <div class="card stat-card">
+                    <div class="stat-label">Total Dons <span id="currentYear"></span></div>
+                    <div class="stat-value" id="totalDonations">0 €</div>
+                    <div class="stat-change" id="yearChange"></div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-label">Crédit d'Impôt Estimé</div>
+                    <div class="stat-value" id="estimatedCredit">0 €</div>
+                    <div class="stat-change positive">Économie fiscale</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-label">Nombre de Dons</div>
+                    <div class="stat-value" id="donationCount">0</div>
+                    <div class="stat-change" id="countChange"></div>
+                </div>
+            </div>
+
+            <!-- Formulaire d'ajout -->
+            <div class="card form-section">
+                <div class="section-title">Ajouter un don</div>
+                <form id="donationForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="donateur">Donateur *</label>
+                            <select id="donateur" required>
+                                <option value="Mathieu">Mathieu</option>
+                                <option value="Assia">Assia</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Date du don *</label>
+                            <input type="date" id="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="organisme">Organisme *</label>
+                            <input type="text" id="organisme" placeholder="Ex: Croix-Rouge" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="montant">Montant (€) *</label>
+                            <input type="number" id="montant" step="0.01" min="0" placeholder="100.00" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tauxReduction">Taux de réduction *</label>
+                            <select id="tauxReduction" required>
+                                <option value="66">66% - Don classique</option>
+                                <option value="75">75% - Aide personnes en difficulté</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="eligible" checked>
+                        <label for="eligible">Éligible au crédit d'impôt</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Ajouter le don</button>
+                </form>
+
+                <div class="tax-info">
+                    <strong>Informations fiscales :</strong><br>
+                    • Dons classiques : <strong>66%</strong> de réduction (plafonné à 20% du revenu imposable)<br>
+                    • Aide aux personnes en difficulté : <strong>75%</strong> de réduction (plafonné à 1 000€, puis 66% au-delà)
+                </div>
+            </div>
+
+            <!-- Liste des dons -->
+            <div class="card">
+                <div class="section-header">
+                    <div class="section-title">Historique des dons</div>
+                </div>
+
+                <!-- Filtres -->
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="filterDonateur">Donateur</label>
+                        <select id="filterDonateur">
+                            <option value="">Tous</option>
+                            <option value="Mathieu">Mathieu</option>
+                            <option value="Assia">Assia</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterYear">Année</label>
+                        <select id="filterYear">
+                            <option value="">Toutes les années</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterOrganisme">Organisme</label>
+                        <select id="filterOrganisme">
+                            <option value="">Tous les organismes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tableau -->
+                <div id="donationsTableContainer">
+                    <table class="donations-table" id="donationsTable">
+                        <thead>
+                            <tr>
+                                <th>Donateur</th>
+                                <th>Date</th>
+                                <th>Organisme</th>
+                                <th>Montant</th>
+                                <th>Taux</th>
+                                <th>Crédit estimé</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="donationsBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== AUTHENTICATION SYSTEM =====
+        const DEFAULT_PASSWORD_HASH = 'f0d69d50df9d46dbb367d8ab8265d051e4e15cd15277230b5c8cd0b0aba18fca'; // SHA-256 of "Admin2025"
+
+        let failedAttempts = 0;
+        let lockoutEndTime = null;
+
+        // SHA-256 hash function using Web Crypto API
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Get stored password hash or default
+        function getStoredPasswordHash() {
+            return localStorage.getItem('passwordHash') || DEFAULT_PASSWORD_HASH;
+        }
+
+        // Check if user is authenticated
+        function isAuthenticated() {
+            return sessionStorage.getItem('authenticated') === 'true';
+        }
+
+        // Initialize auth state
+        function initAuth() {
+            if (isAuthenticated()) {
+                showApp();
+            } else {
+                showLogin();
+            }
+        }
+
+        // Show login screen
+        function showLogin() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('appContainer').classList.remove('visible');
+            document.getElementById('loginPassword').focus();
+        }
+
+        // Show app
+        function showApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('appContainer').classList.add('visible');
+            }, 100);
+            initApp();
+        }
+
+        // Handle login
+        async function handleLogin(e) {
+            e.preventDefault();
+
+            // Check if locked out
+            if (lockoutEndTime && Date.now() < lockoutEndTime) {
+                return;
+            }
+
+            const password = document.getElementById('loginPassword').value;
+            const hashedPassword = await hashPassword(password);
+            const storedHash = getStoredPasswordHash();
+
+            if (hashedPassword === storedHash) {
+                // Success
+                failedAttempts = 0;
+                sessionStorage.setItem('authenticated', 'true');
+                document.getElementById('loginError').classList.remove('visible');
+                showApp();
+            } else {
+                // Failed
+                failedAttempts++;
+                document.getElementById('loginError').textContent = `Mot de passe incorrect (${failedAttempts}/3)`;
+                document.getElementById('loginError').classList.add('visible');
+                document.getElementById('loginPassword').value = '';
+
+                if (failedAttempts >= 3) {
+                    startLockout();
+                }
+            }
+        }
+
+        // Start lockout timer
+        function startLockout() {
+            lockoutEndTime = Date.now() + 30000;
+            document.getElementById('loginBtn').disabled = true;
+            document.getElementById('lockoutTimer').classList.add('visible');
+
+            const interval = setInterval(() => {
+                const remaining = Math.ceil((lockoutEndTime - Date.now()) / 1000);
+                if (remaining <= 0) {
+                    clearInterval(interval);
+                    lockoutEndTime = null;
+                    failedAttempts = 0;
+                    document.getElementById('loginBtn').disabled = false;
+                    document.getElementById('lockoutTimer').classList.remove('visible');
+                    document.getElementById('loginError').classList.remove('visible');
+                } else {
+                    document.getElementById('lockoutSeconds').textContent = remaining;
+                }
+            }, 100);
+        }
+
+        // Toggle password visibility
+        function togglePasswordVisibility() {
+            const input = document.getElementById('loginPassword');
+            const icon = document.getElementById('eyeIcon');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />';
+            } else {
+                input.type = 'password';
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />';
+            }
+        }
+
+        // Logout
+        function logout() {
+            sessionStorage.removeItem('authenticated');
+            document.getElementById('appContainer').classList.remove('visible');
+            setTimeout(() => {
+                showLogin();
+                document.getElementById('loginPassword').value = '';
+            }, 300);
+        }
+
+        // Open password modal
+        function openPasswordModal() {
+            document.getElementById('passwordModal').classList.add('visible');
+            document.getElementById('currentPassword').focus();
+        }
+
+        // Close password modal
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('visible');
+            document.getElementById('changePasswordForm').reset();
+            document.querySelectorAll('.modal-error').forEach(el => el.classList.remove('visible'));
+        }
+
+        // Handle password change
+        async function handlePasswordChange(e) {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Reset errors
+            document.querySelectorAll('.modal-error').forEach(el => el.classList.remove('visible'));
+
+            // Validate current password
+            const currentHash = await hashPassword(currentPassword);
+            if (currentHash !== getStoredPasswordHash()) {
+                document.getElementById('currentPasswordError').classList.add('visible');
+                return;
+            }
+
+            // Validate new password length
+            if (newPassword.length < 6) {
+                document.getElementById('newPasswordError').classList.add('visible');
+                return;
+            }
+
+            // Validate passwords match
+            if (newPassword !== confirmPassword) {
+                document.getElementById('confirmPasswordError').classList.add('visible');
+                return;
+            }
+
+            // Save new password
+            const newHash = await hashPassword(newPassword);
+            localStorage.setItem('passwordHash', newHash);
+
+            closePasswordModal();
+            alert('Mot de passe modifié avec succès !');
+        }
+
+        // ===== DONATION APP =====
+        let donations = JSON.parse(localStorage.getItem('donations')) || [];
+
+        function initApp() {
+            initDateField();
+            renderRecapDonateurs();
+            renderDashboard();
+            renderDonations();
+            populateFilters();
+            setupAppEventListeners();
+        }
+
+        function initDateField() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+        }
+
+        function setupAppEventListeners() {
+            document.getElementById('donationForm').addEventListener('submit', handleAddDonation);
+            document.getElementById('filterDonateur').addEventListener('change', renderDonations);
+            document.getElementById('filterYear').addEventListener('change', renderDonations);
+            document.getElementById('filterOrganisme').addEventListener('change', renderDonations);
+        }
+
+        function handleAddDonation(e) {
+            e.preventDefault();
+
+            const donation = {
+                id: Date.now(),
+                donateur: document.getElementById('donateur').value,
+                date: document.getElementById('date').value,
+                organisme: document.getElementById('organisme').value,
+                montant: parseFloat(document.getElementById('montant').value),
+                type: 'argent',
+                tauxReduction: parseInt(document.getElementById('tauxReduction').value),
+                eligible: document.getElementById('eligible').checked
+            };
+
+            donations.push(donation);
+            saveDonations();
+
+            document.getElementById('donationForm').reset();
+            initDateField();
+
+            renderRecapDonateurs();
+            renderDashboard();
+            renderDonations();
+            populateFilters();
+        }
+
+        function deleteDonation(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce don ?')) {
+                donations = donations.filter(d => d.id !== id);
+                saveDonations();
+                renderRecapDonateurs();
+                renderDashboard();
+                renderDonations();
+                populateFilters();
+            }
+        }
+
+        function saveDonations() {
+            localStorage.setItem('donations', JSON.stringify(donations));
+        }
+
+        function renderRecapDonateurs() {
+            const container = document.getElementById('recapDonateurs');
+            const currentYear = new Date().getFullYear();
+
+            const donateurs = ['Mathieu', 'Assia'];
+
+            container.innerHTML = donateurs.map(donateur => {
+                const donateurDonations = donations.filter(d =>
+                    d.donateur === donateur && new Date(d.date).getFullYear() === currentYear
+                );
+
+                const totalMontant = donateurDonations.reduce((sum, d) => sum + d.montant, 0);
+                const nombreDons = donateurDonations.length;
+
+                const sortedDonations = [...donateurDonations].sort((a, b) => new Date(b.date) - new Date(a.date));
+                const dernierDon = sortedDonations[0];
+
+                return `
+                    <div class="recap-card ${donateur.toLowerCase()}">
+                        <div class="recap-header">
+                            <div class="recap-avatar ${donateur.toLowerCase()}">${donateur.charAt(0)}</div>
+                            <div class="recap-name">${donateur}</div>
+                        </div>
+                        <div class="recap-details">
+                            <div class="recap-row">
+                                <span class="recap-label">Total ${currentYear}</span>
+                                <span class="recap-value amount">${formatCurrency(totalMontant)}</span>
+                            </div>
+                            <div class="recap-row">
+                                <span class="recap-label">Nombre de dons</span>
+                                <span class="recap-value">${nombreDons}</span>
+                            </div>
+                            <div class="recap-row">
+                                <span class="recap-label">Dernier don</span>
+                                <span class="recap-value">${dernierDon ? formatDate(dernierDon.date) : '-'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderDashboard() {
+            const currentYear = new Date().getFullYear();
+            document.getElementById('currentYear').textContent = currentYear;
+
+            const currentYearDonations = donations.filter(d =>
+                new Date(d.date).getFullYear() === currentYear
+            );
+            const lastYearDonations = donations.filter(d =>
+                new Date(d.date).getFullYear() === currentYear - 1
+            );
+
+            const totalCurrent = currentYearDonations.reduce((sum, d) => sum + d.montant, 0);
+            const totalLast = lastYearDonations.reduce((sum, d) => sum + d.montant, 0);
+            const estimatedCredit = calculateTotalCredit(currentYearDonations);
+
+            document.getElementById('totalDonations').textContent = formatCurrency(totalCurrent);
+            document.getElementById('estimatedCredit').textContent = formatCurrency(estimatedCredit);
+            document.getElementById('donationCount').textContent = currentYearDonations.length;
+
+            const yearChangeEl = document.getElementById('yearChange');
+            if (totalLast > 0) {
+                const change = ((totalCurrent - totalLast) / totalLast * 100).toFixed(1);
+                yearChangeEl.textContent = `${change > 0 ? '+' : ''}${change}% vs ${currentYear - 1}`;
+                yearChangeEl.className = `stat-change ${change >= 0 ? 'positive' : 'negative'}`;
+            } else {
+                yearChangeEl.textContent = 'Première année';
+                yearChangeEl.className = 'stat-change';
+            }
+
+            const countChangeEl = document.getElementById('countChange');
+            if (lastYearDonations.length > 0) {
+                const countDiff = currentYearDonations.length - lastYearDonations.length;
+                countChangeEl.textContent = `${countDiff > 0 ? '+' : ''}${countDiff} vs ${currentYear - 1}`;
+                countChangeEl.className = `stat-change ${countDiff >= 0 ? 'positive' : 'negative'}`;
+            } else {
+                countChangeEl.textContent = 'Première année';
+                countChangeEl.className = 'stat-change';
+            }
+        }
+
+        function calculateTotalCredit(donationsList) {
+            let total66 = 0;
+            let total75 = 0;
+
+            donationsList.forEach(d => {
+                if (!d.eligible) return;
+
+                if (d.tauxReduction === 66) {
+                    total66 += d.montant;
+                } else if (d.tauxReduction === 75) {
+                    total75 += d.montant;
+                }
+            });
+
+            let credit75 = 0;
+            if (total75 <= 1000) {
+                credit75 = total75 * 0.75;
+            } else {
+                credit75 = 1000 * 0.75 + (total75 - 1000) * 0.66;
+            }
+
+            const credit66 = total66 * 0.66;
+
+            return credit66 + credit75;
+        }
+
+        function renderDonations() {
+            const tbody = document.getElementById('donationsBody');
+            const filterDonateur = document.getElementById('filterDonateur').value;
+            const filterYear = document.getElementById('filterYear').value;
+            const filterOrganisme = document.getElementById('filterOrganisme').value;
+
+            let filtered = donations.filter(d => {
+                const matchDonateur = !filterDonateur || d.donateur === filterDonateur;
+                const matchYear = !filterYear || new Date(d.date).getFullYear().toString() === filterYear;
+                const matchOrganisme = !filterOrganisme || d.organisme === filterOrganisme;
+                return matchDonateur && matchYear && matchOrganisme;
+            });
+
+            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📋</div>
+                                <div>Aucun don enregistré</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(d => {
+                const credit = d.eligible ? d.montant * (d.tauxReduction / 100) : 0;
+                const donateurClass = d.donateur ? d.donateur.toLowerCase() : '';
+                return `
+                    <tr>
+                        <td data-label="Donateur"><span class="badge badge-${donateurClass}">${d.donateur || 'Non spécifié'}</span></td>
+                        <td data-label="Date">${formatDate(d.date)}</td>
+                        <td data-label="Organisme">${d.organisme}</td>
+                        <td data-label="Montant"><strong>${formatCurrency(d.montant)}</strong></td>
+                        <td data-label="Taux"><span class="badge badge-${d.tauxReduction}">${d.tauxReduction}%</span></td>
+                        <td data-label="Crédit estimé">${d.eligible ? formatCurrency(credit) : 'N/A'}</td>
+                        <td data-label="Action">
+                            <button class="btn-delete" onclick="deleteDonation(${d.id})" title="Supprimer">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function populateFilters() {
+            const years = [...new Set(donations.map(d => new Date(d.date).getFullYear()))].sort((a, b) => b - a);
+            const yearSelect = document.getElementById('filterYear');
+            const currentYear = yearSelect.value;
+            yearSelect.innerHTML = '<option value="">Toutes les années</option>' +
+                years.map(y => `<option value="${y}" ${y.toString() === currentYear ? 'selected' : ''}>${y}</option>`).join('');
+
+            const organismes = [...new Set(donations.map(d => d.organisme))].sort();
+            const organismeSelect = document.getElementById('filterOrganisme');
+            const currentOrganisme = organismeSelect.value;
+            organismeSelect.innerHTML = '<option value="">Tous les organismes</option>' +
+                organismes.map(o => `<option value="${o}" ${o === currentOrganisme ? 'selected' : ''}>${o}</option>`).join('');
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('fr-FR', {
+                style: 'currency',
+                currency: 'EUR'
+            }).format(amount);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat('fr-FR').format(date);
+        }
+
+        // ===== EVENT LISTENERS =====
+        document.addEventListener('DOMContentLoaded', () => {
+            // Auth events
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            document.getElementById('togglePassword').addEventListener('click', togglePasswordVisibility);
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            document.getElementById('settingsBtn').addEventListener('click', openPasswordModal);
+            document.getElementById('cancelPasswordChange').addEventListener('click', closePasswordModal);
+            document.getElementById('changePasswordForm').addEventListener('submit', handlePasswordChange);
+
+            // Close modal on overlay click
+            document.getElementById('passwordModal').addEventListener('click', (e) => {
+                if (e.target.id === 'passwordModal') {
+                    closePasswordModal();
+                }
+            });
+
+            // Initialize auth
+            initAuth();
+        });
+    </script>
+</body>
+</html>
